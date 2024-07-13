@@ -2,11 +2,15 @@
 #include <cassert>
 #include <cstdint>
 #include <iostream>
+#include <limits>
 #include <vector>
+
+using std::vector;
 
 namespace DataStructure::graph
 {
     using Vertex = size_t;
+    constexpr int INF = std::numeric_limits<int>().max() / 2;
 
     template <typename E>
     class Graph
@@ -20,6 +24,8 @@ namespace DataStructure::graph
         virtual void removeEdge(Vertex from, Vertex to) = 0;
         virtual void printGraph() = 0;
         virtual int getEdge(Vertex from, Vertex to) = 0;
+        virtual vector<Vertex> getAdjacentVertices(Vertex vertex) = 0;
+        virtual vector<int> Dijkstra(Vertex start) = 0;
         virtual ~Graph() = default;
 
     public:
