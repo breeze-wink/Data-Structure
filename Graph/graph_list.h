@@ -31,6 +31,8 @@ namespace DataStructure::graph
         virtual vector<int> Bellman_Ford(Vertex start, int steps = -1) override;
         virtual vector<int> spfa(Vertex start) override;
         virtual bool containsNegativeCycle() override;
+        virtual MSTResult Prim() override;
+        virtual MSTResult Kruskal() override;
     private:
         std::vector<std::forward_list<PVI>> adjList;
     };
@@ -276,5 +278,110 @@ namespace DataStructure::graph
         }
 
         return false;
+    }
+
+    template <typename E>
+    MSTResult GraphList<E>::Prim()
+    {
+        vector<int> distences(this -> vertexCount, INF);
+        vector<int> pre(this -> vertexCount, -1);
+        vector<bool> inMST(this -> vertexCount, false);
+        vector<Edge> MSTedges;
+        int edgeSum = 0;
+        distences[0] = 0;
+        
+        for (int i = 0; i < this -> vertexCount; i ++)
+        {
+            int nearNode = -1;
+
+            for (Vertex j = 0; j < this -> vertexCount; j ++)
+            {
+                if (! inMST[j] && (nearNode == -1 || distences[j] > distences[nearNode]))
+                {
+                    nearNode = j;
+                }
+            }
+            
+            if (distences[nearNode] == INF)
+            {
+                return std::make_pair(-1, vector<Edge>()); // 不存在MST
+            }
+
+            inMST[nearNode] = true;
+            MSTedges.emplace_back(Edge{(Vertex)(pre[nearNode]), (Vertex)(nearNode), distences[nearNode]});
+            edgeSum += distences[nearNode];
+
+            for (const auto& e : adjList[nearNode])
+            {
+                Vertex j = e.first;
+                int dist = e.second;
+
+                if (dist < distences[j])
+                {
+                    distences[j] = dist;
+                    pre[j] = nearNode;
+                }
+            }
+        }
+
+        return std::make_pair(edgeSum, std::move(MSTedges));
+    }
+
+    template <typename E>
+    MSTResult GraphList<E>::Kruskal()
+    {
+        vector<Edge> MSTedges;
+        int edgeSum = 0;
+        uint edgeCount = 0;
+
+        vector<Vertex> father(this -> vertexCount);
+        for (int i = 0; i < this -> vertexCount; ++i)
+        {
+            father[i] = i;
+        }
+
+        //边的存储可以直接加一个成员变量，在插入的时候就维护
+        vector<Edge> edges;
+
+        for (Vertex i = 0; i < this -> vertexCount; ++ i)
+        {
+            for (Vertex j = 0; j < this -> vertexCount; ++ j)
+            {
+                if (this -> adjMatrix[i][j] != INF && i != j)
+                {
+                    edges.emplace_back(Edge{i, j, this -> adjMatrix[i][j]});
+                }
+            }
+        }
+
+        std::sort(edges.begin(), edges.end(), [](const Edge &a, const Edge &b) {
+            return a.weight < b.weight;
+        });
+
+        std::function<Vertex(Vertex)> find = [&](Vertex x) { //有趣的写法
+            if (father[x] != x) {
+                father[x] = find(father[x]);
+            }
+            return father[x];
+        };
+
+        for (const auto& edge : edges)
+        {
+            Vertex a = edge.from, b = edge.to;
+            if (find(a) != find(b))
+            {
+                father[find(a)] = find(b);
+                MSTedges.emplace_back(edge);
+                edgeSum += edge.weight;
+                edgeCount ++;
+            }
+        }
+
+        if (edgeCount != this -> vertexCount - 1)
+        {
+            return std::make_pair(-1, vector<Edge>());
+        }
+
+        return std::make_pair(edgeSum, std::move(MSTedges));
     }
 }

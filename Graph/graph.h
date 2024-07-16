@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <iostream>
 #include <limits>
+#include <set>
+#include <unordered_set>
+#include <utility>
 #include <vector>
 
 using std::vector;
@@ -18,6 +21,24 @@ namespace DataStructure::graph
         Vertex to;
         int weight;
     };
+
+    struct EdgeHash
+    {
+        size_t operator()(const Edge& e) const
+        {
+            return std::hash<Vertex>()(e.from) ^ std::hash<Vertex>()(e.to);
+        }
+    };
+
+    struct EdgeEqual
+    {
+        bool operator()(const Edge& e1, const Edge& e2) const
+        {
+            return e1.from == e2.from && e1.to == e2.to;
+        }
+    };
+
+    using MSTResult = std::pair<int, vector<Edge>>;
 
     template <typename E>
     class Graph
@@ -40,6 +61,8 @@ namespace DataStructure::graph
         virtual vector<int> Bellman_Ford(Vertex start, int steps = -1) = 0;
         virtual vector<int> spfa(Vertex start) = 0;
         virtual bool containsNegativeCycle() = 0;
+        virtual MSTResult Prim() = 0;
+        virtual MSTResult Kruskal() = 0;
 
     public:
         void setVertex(Vertex vertex, E value);
@@ -48,6 +71,7 @@ namespace DataStructure::graph
     protected:
         size_t vertexCount;
         std::vector<E> vertices;
+        std::unordered_set<Edge, EdgeHash, EdgeEqual> edges;
     };
 
     template <typename E>
@@ -68,4 +92,5 @@ namespace DataStructure::graph
         }
         this -> vertices[vertex] = value;
     }
+    
 }
