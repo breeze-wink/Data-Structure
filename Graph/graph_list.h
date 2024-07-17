@@ -54,6 +54,17 @@ namespace DataStructure::graph
             throw std::out_of_range("addEdge: Vertex out of range");
         }
         adjList[from].emplace_front(std::make_pair(to, weight));
+
+        Edge e = {from, to, weight};
+        
+        auto it = this -> edges.find(e);
+
+        if (it != this -> edges.end() && it -> weight > weight)
+        {
+            this -> edges.erase(it);
+            this -> edges.insert(e);
+        }
+        else if (it == this -> edges.end()) this -> edges.insert(e);
     }
 
     template <typename E>
@@ -66,6 +77,15 @@ namespace DataStructure::graph
         adjList[from].remove_if([&to](const PVI& edge){
             return edge.first == to;
         });
+
+        Edge e = {from, to, 1};
+        
+        auto it = this -> edges.find(e);
+
+        if (it != this -> edges.end())
+        {
+            this -> edges.erase(it);
+        }
     }
 
     template <typename E>
@@ -80,6 +100,7 @@ namespace DataStructure::graph
         {
             result.push_back(edge.first);
         }
+        return result;
     }
 
     template <typename E>
@@ -166,25 +187,16 @@ namespace DataStructure::graph
         {
             throw std::out_of_range("Bellman-ford: start vertex is out of range");
         }
-        vector<Edge> edges;
         vector<int> ans(this -> vertexCount, INF);
         vector<int> last(this -> vertexCount);
         ans[start] = 0;
-
-        for (Vertex i = 0; i < this -> vertexCount; i ++)
-        {
-            for (auto e : adjList[i])
-            {
-                edges.emplace_back(Edge{i, e.first, e.second});
-            }
-        }
 
         if (steps == -1) steps = this -> vertexCount - 1;
 
         for (int i = 0; i < steps; ++ i)
         {
             std::copy(ans.begin(), ans.end(), last.begin());
-            for (const auto& e : edges)
+            for (const auto& e : this -> edges)
             {
                 ans[e.to] = std::min(ans[e.to], last[e.from] + e.weight);
             }
@@ -341,18 +353,7 @@ namespace DataStructure::graph
         }
 
         //边的存储可以直接加一个成员变量，在插入的时候就维护
-        vector<Edge> edges;
-
-        for (Vertex i = 0; i < this -> vertexCount; ++ i)
-        {
-            for (Vertex j = 0; j < this -> vertexCount; ++ j)
-            {
-                if (this -> adjMatrix[i][j] != INF && i != j)
-                {
-                    edges.emplace_back(Edge{i, j, this -> adjMatrix[i][j]});
-                }
-            }
-        }
+        vector<Edge> edges{this -> edges.begin(), this -> edges.end()};                                                                                                                                                                                                                                                          ;
 
         std::sort(edges.begin(), edges.end(), [](const Edge &a, const Edge &b) {
             return a.weight < b.weight;
