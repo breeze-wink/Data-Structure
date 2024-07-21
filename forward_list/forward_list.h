@@ -417,4 +417,29 @@ namespace DataStructure::forward_list
         else
             return const_iterator(m_tail -> m_next);
     }
+
+    template <typename T>
+    void ForwardList<T>::reverse()
+    {
+        if (m_size <= 1)
+        {
+            return;
+        }
+
+        Node* prev = nullptr;
+        auto head = m_head;
+        auto tail = m_tail;
+
+        auto curr = head;
+        while (curr != nullptr)
+        {
+            auto next = curr -> m_next;
+            curr -> m_next = prev;
+            prev = curr;
+            curr = next;
+        }
+        m_head = tail;
+        m_tail = head;
+
+    }
 }
