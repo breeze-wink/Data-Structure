@@ -41,6 +41,7 @@ namespace DataStructure::forward_list
         void resize(int size);
         void merge(ForwardList<T> & other);
         void swap(ForwardList<T> & other);
+        void reverse();
 
         ForwardList<T> & operator = (const ForwardList<T> & other);
 
