@@ -227,7 +227,7 @@ namespace DataStructure
     }
 
     template <typename T>
-    TreeNode<T> * BSTree<T>::del_raw(const T & key)
+    TreeNode<T> * BSTree<T>::del_raw(const T & key) //找到要删的点，配合del函数
     {
         auto root = this->m_root;
         while (root != nullptr)
