@@ -2,7 +2,7 @@
 
 #include "list_node.h"
 
-namespace DataStructure::list
+namespace DataStructure
 {
     template <typename T>
     class ListIterator

@@ -2,7 +2,7 @@
 
 #include "forward_list_node.h"
 
-namespace DataStructure::forward_list
+namespace DataStructure
 {
     template <typename T>
     class ForwardList;

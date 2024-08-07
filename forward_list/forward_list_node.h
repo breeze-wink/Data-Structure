@@ -1,6 +1,6 @@
 #pragma once
 
-namespace DataStructure::forward_list
+namespace DataStructure
 {
     template <typename T>
     class ForwardListNode

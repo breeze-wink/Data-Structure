@@ -10,7 +10,7 @@
 
 using std::vector;
 
-namespace DataStructure::graph
+namespace DataStructure
 {
     using Vertex = size_t;
     constexpr int INF = std::numeric_limits<int>().max() / 2;

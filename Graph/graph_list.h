@@ -9,7 +9,7 @@
 #include <list>
 
 
-namespace DataStructure::graph
+namespace DataStructure
 {
     template <typename E>
     class GraphList: public Graph<E>

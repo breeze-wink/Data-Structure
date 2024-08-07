@@ -1,6 +1,6 @@
 #pragma once
 
-namespace DataStructure::list
+namespace DataStructure
 {
     template <typename T>
     class ListNode

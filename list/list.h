@@ -7,7 +7,7 @@
 #include "list_const_iterator.h"
 #include "list_reverse_iterator.h"
 
-namespace DataStructure::list
+namespace DataStructure
 {
     template <typename T>
     class List

@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-namespace DataStructure::graph
+namespace DataStructure
 {
     template <typename E>
     class GraphMatrix : public Graph<E>

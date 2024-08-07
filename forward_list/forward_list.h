@@ -6,7 +6,7 @@
 #include "forward_list_iterator.h"
 #include "forward_list_const_iterator.h"
 
-namespace DataStructure::forward_list
+namespace DataStructure
 {
     template <typename T>
     class ForwardList
