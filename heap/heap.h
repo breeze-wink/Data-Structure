@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <iostream>
+#include <utility>
 #include <vector>
 
 namespace Da
@@ -37,7 +38,7 @@ namespace Da
     Heap<T, Container, Compare>::~Heap() {}
 
     template <typename T, typename Container, typename Compare>
-    void Heap<T, Container, Compare>::heapify(int i)
+    void Heap<T, Container, Compare>::heapify(int i) //堆化
     {
         int size = m_container.size();
         int largest = i;
@@ -67,9 +68,12 @@ namespace Da
         int size = m_container.size();
         if (size > 1)
         {
-            for (int i = size / 2 - 1; i >= 0; i--)
+            int index = size - 1;
+            int parent = (index - 1) / 2;
+            while (index > 0 && m_compare(m_container[parent], m_container[index]))
             {
-                heapify(i);
+                std::swap(m_container[index], m_container[parent]);
+                index = parent;
             }
         }
     }
@@ -78,17 +82,35 @@ namespace Da
     void Heap<T, Container, Compare>::pop()
     {
         int size = m_container.size();
-        T temp = m_container[0];
-        m_container[0] = m_container[size - 1];
-        m_container[size - 1] = temp;
+        
+        std::swap(m_container[size - 1], m_container[0]);
+
         m_container.pop_back();
 
         size = m_container.size();
         if (size > 1)
         {
-            for (int i = size / 2 - 1; i >= 0; i--)
+            int index = 0;
+            while (index <= (size - 1 - 1) / 2)
             {
-                heapify(i);
+                int left = 2 * index + 1;
+                int right = 2 * index + 2;
+                int max_ = index;
+
+                if (m_compare(m_container[max_], m_container[left]))
+                {
+                    max_ = left;
+                }
+                if (m_compare(m_container[max_], m_container[right]))
+                {
+                    max_ = right;
+                }
+
+                if (max_ == index) break;
+
+                std::swap(m_container[index], m_container[max_]);
+
+                index = max_;
             }
         }
     }
